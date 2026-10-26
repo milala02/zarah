@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zarah.game/schemas/sim_defaults.schema.json",
+  "title": "Simulation Defaults",
+  "description": "Parameter default inisialisasi dunia simulasi Zarah",
+  "type": "object",
+  "required": [
+    "suhu_ambient_c",
+    "material_udara_id",
+    "rujukan"
+  ],
+  "properties": {
+    "suhu_ambient_c": {
+      "type": "number"
+    },
+    "material_udara_id": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "rujukan": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}
