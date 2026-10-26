@@ -43,7 +43,15 @@ jobs:
         run: |
           ./godot --headless --path . -s res://tests/run_tests.gd
 
+  # TODO(M0-ditunda): Build APK ditunda atas keputusan pemilik proyek.
+  # Alasan: preset Android saat ini set min_sdk tapi gradle_build=false.
+  # Aktifkan kembali setelah salah satu dari dua perbaikan dipilih:
+  #   (a) set gradle_build/use_gradle_build=true dan siapkan Android SDK
+  #       + NDK + export templates di runner, ATAU
+  #   (b) hapus override min_sdk (pakai default Godot untuk debug).
+  # JANGAN aktifkan kembali tanpa uji lokal dulu.
   build-android:
+    if: false
     name: Build Android Debug APK
     needs: validate-and-test
     runs-on: ubuntu-24.04
