@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zarah.game/schemas/material.schema.json",
+  "title": "Material",
+  "description": "Skema data sifat fisika dan kimia material di Zarah",
+  "type": "object",
+  "required": [
+    "id",
+    "nama",
+    "fase_default",
+    "kerapatan_kg_m3",
+    "warna_dasar_srgb",
+    "rujukan"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "nama": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fase_default": {
+      "type": "string",
+      "enum": ["padat", "cair", "gas"]
+    },
+    "kerapatan_kg_m3": {
+      "oneOf": [
+        {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "properties": {
+            "padat": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "cair": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "gas": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "suhu_transisi_c": {
+      "type": "object",
+      "properties": {
+        "titik_beku": {
+          "type": "number"
+        },
+        "titik_didih": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "daya_hantar_panas": {
+      "type": "number",
+      "minimum": 0
+    },
+    "kapasitas_panas": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "mudah_terbakar": {
+      "type": "boolean"
+    },
+    "warna_dasar_srgb": {
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}$"
+    },
+    "rujukan": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

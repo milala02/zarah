@@ -1,0 +1,16 @@
+{
+  "id": "water",
+  "nama": "Air",
+  "fase_default": "cair",
+  "kerapatan_kg_m3": {
+    "cair": 1000,
+    "padat": 917
+  },
+  "suhu_transisi_c": {
+    "titik_beku": 0,
+    "titik_didih": 100
+  },
+  "mudah_terbakar": false,
+  "warna_dasar_srgb": "#A8D4E6",
+  "rujukan": "CRC Handbook of Chemistry and Physics, 97th ed. (2016); NIST Chemistry WebBook"
+}
