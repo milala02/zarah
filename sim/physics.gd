@@ -15,6 +15,8 @@ static func apply_chunk(chunk: Chunk, registry: MaterialRegistry, tick_count: in
 			var kind: int = registry.get_physics_kind(cell.material_id)
 			if kind == MaterialRegistry.KIND_POWDER:
 				_step_powder(chunk, registry, x, y, preferred, tick_count)
+			elif kind == MaterialRegistry.KIND_LIQUID:
+				_step_liquid(chunk, registry, x, y, preferred, tick_count)
 
 
 static func _step_powder(
@@ -30,6 +32,43 @@ static func _step_powder(
 	if _try_move(chunk, registry, x, y, x + preferred, y + 1, DIR_DOWN, tick_count):
 		return
 	_try_move(chunk, registry, x, y, x - preferred, y + 1, DIR_DOWN, tick_count)
+
+
+static func _step_liquid(
+	chunk: Chunk,
+	registry: MaterialRegistry,
+	x: int,
+	y: int,
+	preferred: int,
+	tick_count: int
+) -> void:
+	if _try_move(chunk, registry, x, y, x, y + 1, DIR_DOWN, tick_count):
+		return
+	if _try_move(chunk, registry, x, y, x + preferred, y + 1, DIR_DOWN, tick_count):
+		return
+	if _try_move(chunk, registry, x, y, x - preferred, y + 1, DIR_DOWN, tick_count):
+		return
+	if not _can_spread_sideways(chunk, registry, x, y):
+		return
+	if _try_move(chunk, registry, x, y, x + preferred, y, DIR_DOWN, tick_count):
+		return
+	_try_move(chunk, registry, x, y, x - preferred, y, DIR_DOWN, tick_count)
+
+
+static func _can_spread_sideways(
+	chunk: Chunk,
+	registry: MaterialRegistry,
+	x: int,
+	y: int
+) -> bool:
+	if y - 1 < 0:
+		return true
+	var above: Cell = chunk.get_cell(x, y - 1)
+	var above_kind: int = registry.get_physics_kind(above.material_id)
+	return (
+		above_kind == MaterialRegistry.KIND_LIQUID
+		or above_kind == MaterialRegistry.KIND_GAS
+	)
 
 
 static func _try_move(
