@@ -163,23 +163,3 @@ static func _try_move(
 	chunk._dirty = true
 	return true
 
-
-static func swap_cells(
-	chunk: Chunk,
-	x1: int,
-	y1: int,
-	x2: int,
-	y2: int,
-	tick_count: int
-) -> void:
-	# Hanya src yang ditandai. dst (yang terdesak) tidak — sehingga
-	# kolom material sejenis dapat jatuh bersama 1 sel per tick.
-	var cells: Array = chunk._cells
-	var idx1: int = y1 * Chunk.CHUNK_SIZE + x1
-	var idx2: int = y2 * Chunk.CHUNK_SIZE + x2
-	var c1: Cell = (cells[idx1] as Cell).duplicate_cell()
-	var c2: Cell = (cells[idx2] as Cell).duplicate_cell()
-	c1.last_moved_tick = tick_count
-	cells[idx1] = c2
-	cells[idx2] = c1
-	chunk._dirty = true
