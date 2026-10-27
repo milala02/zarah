@@ -9,12 +9,18 @@ var chunks: Dictionary
 var tick_count: int
 var _defaults: Dictionary
 var _rng: Rng
+var _registry: MaterialRegistry
 
 
-func _init(p_seed: int, defaults: Dictionary) -> void:
+func _init(
+	p_seed: int,
+	defaults: Dictionary,
+	registry: MaterialRegistry = null
+) -> void:
 	seed = p_seed
 	_defaults = defaults.duplicate()
 	_rng = Rng.new(p_seed)
+	_registry = registry
 	chunks = {}
 	tick_count = 0
 
@@ -32,18 +38,7 @@ func chunk_at(coord: Vector2i) -> Chunk:
 	return chunks[coord] as Chunk
 
 
-func tick(_dt: float) -> void:
-	tick_count += 1
-	_rng.next_u64()
-
-
-func state_hash() -> String:
-	var ctx: HashingContext = HashingContext.new()
-	ctx.start(HashingContext.HASH_SHA256)
-
-	var header: String = "%d|%d|%d|" % [seed, tick_count, _rng._state]
-	ctx.update(header.to_utf8_buffer())
-
+func _sorted_coords() -> Array[Vector2i]:
 	var coords: Array[Vector2i] = []
 	for key: Variant in chunks.keys():
 		coords.append(key as Vector2i)
@@ -53,6 +48,26 @@ func state_hash() -> String:
 				return a.x < b.x
 			return a.y < b.y
 	)
+	return coords
+
+
+func tick(_dt: float) -> void:
+	tick_count += 1
+	_rng.next_u64()
+	if _registry != null:
+		for coord: Vector2i in _sorted_coords():
+			var chunk: Chunk = chunks[coord] as Chunk
+			Physics.apply_chunk(chunk, _registry, tick_count)
+
+
+func state_hash() -> String:
+	var ctx: HashingContext = HashingContext.new()
+	ctx.start(HashingContext.HASH_SHA256)
+
+	var header: String = "%d|%d|%d|" % [seed, tick_count, _rng._state]
+	ctx.update(header.to_utf8_buffer())
+
+	var coords: Array[Vector2i] = _sorted_coords()
 
 	var buf: StreamPeerBuffer = StreamPeerBuffer.new()
 	for coord: Vector2i in coords:
@@ -67,6 +82,7 @@ func state_hash() -> String:
 				buf.put_double(c.suhu_c)
 				buf.put_double(c.massa_kg)
 				buf.put_64(c.fase)
+				buf.put_64(c.last_moved_tick)
 		ctx.update(buf.data_array)
 
 	return ctx.finish().hex_encode()
