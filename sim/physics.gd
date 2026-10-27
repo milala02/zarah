@@ -18,12 +18,15 @@ static func apply_chunk_kind(
 	target_kind: int
 ) -> void:
 	var preferred: int = -1 if (tick_count % 2 == 0) else 1
+	var cells: Array = chunk._cells
+	var kinds: Dictionary = registry._kinds
 	for y: int in range(Chunk.CHUNK_SIZE - 1, -1, -1):
+		var y_offset: int = y * Chunk.CHUNK_SIZE
 		for x: int in range(Chunk.CHUNK_SIZE):
-			var cell: Cell = chunk.get_cell(x, y)
+			var cell: Cell = cells[y_offset + x] as Cell
 			if cell.last_moved_tick == tick_count:
 				continue
-			var kind: int = registry.get_physics_kind(cell.material_id)
+			var kind: int = int(kinds.get(cell.material_id, MaterialRegistry.KIND_STATIC))
 			if kind != target_kind:
 				continue
 
@@ -94,8 +97,8 @@ static func _can_spread_sideways(
 ) -> bool:
 	if y - 1 < 0:
 		return true
-	var above: Cell = chunk.get_cell(x, y - 1)
-	var above_kind: int = registry.get_physics_kind(above.material_id)
+	var above: Cell = chunk._cells[(y - 1) * Chunk.CHUNK_SIZE + x] as Cell
+	var above_kind: int = int(registry._kinds.get(above.material_id, MaterialRegistry.KIND_STATIC))
 	return (
 		above_kind == MaterialRegistry.KIND_LIQUID
 		or above_kind == MaterialRegistry.KIND_GAS
@@ -112,41 +115,53 @@ static func _try_move(
 	direction: int,
 	tick_count: int
 ) -> bool:
-	if not _in_chunk(x2, y2):
+	if not (x2 >= 0 and x2 < Chunk.CHUNK_SIZE and y2 >= 0 and y2 < Chunk.CHUNK_SIZE):
 		return false
-	var src: Cell = chunk.get_cell(x1, y1)
-	var dst: Cell = chunk.get_cell(x2, y2)
-	if not _can_swap(src, dst, direction, registry, tick_count):
+	var cells: Array = chunk._cells
+	var idx1: int = y1 * Chunk.CHUNK_SIZE + x1
+	var idx2: int = y2 * Chunk.CHUNK_SIZE + x2
+	var src: Cell = cells[idx1] as Cell
+	var dst: Cell = cells[idx2] as Cell
+
+	if src.last_moved_tick == tick_count or dst.last_moved_tick == tick_count:
 		return false
-	swap_cells(chunk, x1, y1, x2, y2, tick_count)
-	return true
 
-
-static func _in_chunk(x: int, y: int) -> bool:
-	return x >= 0 and x < Chunk.CHUNK_SIZE and y >= 0 and y < Chunk.CHUNK_SIZE
-
-
-static func _can_swap(
-	src: Cell,
-	dst: Cell,
-	direction: int,
-	registry: MaterialRegistry,
-	tick_count: int
-) -> bool:
-	var dst_kind: int = registry.get_physics_kind(dst.material_id)
+	var dst_kind: int = int(registry._kinds.get(dst.material_id, MaterialRegistry.KIND_STATIC))
 	if dst_kind == MaterialRegistry.KIND_STATIC:
 		return false
-	if src.last_moved_tick == tick_count:
-		return false
-	if dst.last_moved_tick == tick_count:
-		return false
-	var src_density: float = registry.get_density(src.material_id)
-	var dst_density: float = registry.get_density(dst.material_id)
+
+	var src_density: float = float(registry._densities.get(src.material_id, 0.0))
+	var dst_density: float = float(registry._densities.get(dst.material_id, 0.0))
 	if direction == DIR_DOWN:
-		return dst_density < src_density
-	if direction == DIR_UP:
-		return dst_density > src_density
-	return false
+		if dst_density >= src_density:
+			return false
+	elif direction == DIR_UP:
+		if dst_density <= src_density:
+			return false
+	else:
+		return false
+
+	# In-place swap of cell fields to eliminate 2 full object instantiations per move
+	var tmp_mid: int = src.material_id
+	var tmp_suhu: float = src.suhu_c
+	var tmp_massa: float = src.massa_kg
+	var tmp_fase: int = src.fase
+
+	src.material_id = dst.material_id
+	src.suhu_c = dst.suhu_c
+	src.massa_kg = dst.massa_kg
+	src.fase = dst.fase
+	# dst is not marked moved
+	src.last_moved_tick = dst.last_moved_tick
+
+	dst.material_id = tmp_mid
+	dst.suhu_c = tmp_suhu
+	dst.massa_kg = tmp_massa
+	dst.fase = tmp_fase
+	dst.last_moved_tick = tick_count
+
+	chunk._dirty = true
+	return true
 
 
 static func swap_cells(
@@ -159,11 +174,12 @@ static func swap_cells(
 ) -> void:
 	# Hanya src yang ditandai. dst (yang terdesak) tidak — sehingga
 	# kolom material sejenis dapat jatuh bersama 1 sel per tick.
-	# Alasan: iterasi bottom-up menjamin src yang bergerak ke bawah
-	# sudah melewati posisi tujuan, dan src yang bergerak ke atas
-	# (gas) sudah ditandai sehingga tidak akan diproses lagi.
-	var c1: Cell = chunk.get_cell(x1, y1).duplicate_cell()
-	var c2: Cell = chunk.get_cell(x2, y2).duplicate_cell()
+	var cells: Array = chunk._cells
+	var idx1: int = y1 * Chunk.CHUNK_SIZE + x1
+	var idx2: int = y2 * Chunk.CHUNK_SIZE + x2
+	var c1: Cell = (cells[idx1] as Cell).duplicate_cell()
+	var c2: Cell = (cells[idx2] as Cell).duplicate_cell()
 	c1.last_moved_tick = tick_count
-	chunk.set_cell(x1, y1, c2)
-	chunk.set_cell(x2, y2, c1)
+	cells[idx1] = c2
+	cells[idx2] = c1
+	chunk._dirty = true
