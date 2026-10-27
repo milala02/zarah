@@ -4,6 +4,7 @@ const EXPECTED_CLASSES: Array[String] = [
 	"Cell",
 	"Rng",
 	"Chunk",
+	"World",
 ]
 
 const TESTS: Array[String] = [
@@ -11,6 +12,8 @@ const TESTS: Array[String] = [
 	"res://tests/test_cell.gd",
 	"res://tests/test_rng.gd",
 	"res://tests/test_chunk.gd",
+	"res://tests/test_world.gd",
+	"res://tests/test_world_loads_real_defaults.gd",
 ]
 
 
