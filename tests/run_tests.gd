@@ -21,6 +21,7 @@ const TESTS: Array[String] = [
 	"res://tests/test_material_registry.gd",
 	"res://tests/test_physics_powder.gd",
 	"res://tests/test_physics_liquid.gd",
+	"res://tests/test_physics_gas.gd",
 ]
 
 

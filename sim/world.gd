@@ -55,9 +55,19 @@ func tick(_dt: float) -> void:
 	tick_count += 1
 	_rng.next_u64()
 	if _registry != null:
-		for coord: Vector2i in _sorted_coords():
+		var coords: Array[Vector2i] = _sorted_coords()
+		# Pass 1: POWDER
+		for coord: Vector2i in coords:
 			var chunk: Chunk = chunks[coord] as Chunk
-			Physics.apply_chunk(chunk, _registry, tick_count)
+			Physics.apply_chunk_kind(chunk, _registry, tick_count, MaterialRegistry.KIND_POWDER)
+		# Pass 2: LIQUID
+		for coord: Vector2i in coords:
+			var chunk: Chunk = chunks[coord] as Chunk
+			Physics.apply_chunk_kind(chunk, _registry, tick_count, MaterialRegistry.KIND_LIQUID)
+		# Pass 3: GAS
+		for coord: Vector2i in coords:
+			var chunk: Chunk = chunks[coord] as Chunk
+			Physics.apply_chunk_kind(chunk, _registry, tick_count, MaterialRegistry.KIND_GAS)
 
 
 func state_hash() -> String:
