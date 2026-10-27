@@ -3,12 +3,14 @@ extends SceneTree
 const EXPECTED_CLASSES: Array[String] = [
 	"Cell",
 	"Rng",
+	"Chunk",
 ]
 
 const TESTS: Array[String] = [
 	"res://tests/test_smoke.gd",
 	"res://tests/test_cell.gd",
 	"res://tests/test_rng.gd",
+	"res://tests/test_chunk.gd",
 ]
 
 
