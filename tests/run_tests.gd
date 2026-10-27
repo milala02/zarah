@@ -5,6 +5,7 @@ const EXPECTED_CLASSES: Array[String] = [
 	"Rng",
 	"Chunk",
 	"World",
+	"SimSerialize",
 ]
 
 const TESTS: Array[String] = [
@@ -14,6 +15,7 @@ const TESTS: Array[String] = [
 	"res://tests/test_chunk.gd",
 	"res://tests/test_world.gd",
 	"res://tests/test_world_loads_real_defaults.gd",
+	"res://tests/test_serialize.gd",
 ]
 
 
