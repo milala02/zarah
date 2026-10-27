@@ -1,0 +1,14 @@
+{
+  "id": "udara",
+  "id_numerik": 0,
+  "nama": "Udara",
+  "fase_default": "gas",
+  "physics_kind": "gas",
+  "kerapatan_kg_m3": 1.2,
+  "suhu_transisi_c": {},
+  "daya_hantar_panas": null,
+  "kapasitas_panas": null,
+  "mudah_terbakar": false,
+  "warna_dasar_srgb": "#C8E6F0",
+  "rujukan": "CRC Handbook of Chemistry and Physics, 97th ed. (2016) — densitas udara kering pada 20 °C, 1 atm."
+}

@@ -7,6 +7,7 @@ var material_id: int
 var suhu_c: float
 var massa_kg: float
 var fase: int
+var last_moved_tick: int = -1
 
 
 func _init(p_material_id: int, p_suhu_c: float, p_massa_kg: float, p_fase: int) -> void:
@@ -14,6 +15,7 @@ func _init(p_material_id: int, p_suhu_c: float, p_massa_kg: float, p_fase: int) 
 	suhu_c = p_suhu_c
 	massa_kg = p_massa_kg
 	fase = p_fase
+	last_moved_tick = -1
 
 
 func equals(other: Cell) -> bool:
@@ -26,4 +28,6 @@ func equals(other: Cell) -> bool:
 
 
 func duplicate_cell() -> Cell:
-	return Cell.new(material_id, suhu_c, massa_kg, fase)
+	var copy: Cell = Cell.new(material_id, suhu_c, massa_kg, fase)
+	copy.last_moved_tick = last_moved_tick
+	return copy

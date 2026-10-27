@@ -1,0 +1,14 @@
+{
+  "id": "stone",
+  "id_numerik": 1,
+  "nama": "Batu",
+  "fase_default": "padat",
+  "physics_kind": "static",
+  "kerapatan_kg_m3": 2600,
+  "suhu_transisi_c": {},
+  "daya_hantar_panas": null,
+  "kapasitas_panas": null,
+  "mudah_terbakar": false,
+  "warna_dasar_srgb": "#8A8A8A",
+  "rujukan": "CRC Handbook of Chemistry and Physics, 97th ed. (2016) — densitas granit/batuan rata-rata."
+}

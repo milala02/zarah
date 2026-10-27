@@ -63,6 +63,7 @@ static func load_chunk(data: Dictionary) -> Chunk:
 		float(first_entry["m"]),
 		int(first_entry["f"])
 	)
+	initial_cell.last_moved_tick = -1
 	var chunk: Chunk = Chunk.new(coord, initial_cell)
 
 	var idx: int = 0
@@ -75,6 +76,7 @@ static func load_chunk(data: Dictionary) -> Chunk:
 				float(entry["m"]),
 				int(entry["f"])
 			)
+			cell.last_moved_tick = -1
 			chunk.set_cell(x, y, cell)
 			idx += 1
 

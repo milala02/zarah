@@ -39,7 +39,7 @@ func run() -> Dictionary:
 		world.tick_count == 1
 		and sample_cell.material_id == int(defaults["material_udara_id"])
 		and is_equal_approx(sample_cell.suhu_c, float(defaults["suhu_ambient_c"]))
-		and sample_cell.fase == Cell.Fase.PADAT
+		and sample_cell.fase == Cell.Fase.GAS
 		and world.state_hash().length() == 64,
 		"World dengan data/sim_defaults.json asli harus berjalan dan menghasilkan state_hash valid",
 		stats

@@ -70,6 +70,32 @@ class TestValidateData(unittest.TestCase):
         exit_code = validate_all_data(self.root)
         self.assertEqual(exit_code, 1)
 
+    def test_duplicate_id_numerik_exits_1(self) -> None:
+        """Dua file material dengan id_numerik sama harus menghasilkan kode keluar 1."""
+        valid_defaults = {
+            "suhu_ambient_c": 20.0,
+            "material_udara_id": 0,
+            "rujukan": "ISO 1:2016",
+        }
+        (self.root / "data" / "sim_defaults.json").write_text(
+            json.dumps(valid_defaults), encoding="utf-8"
+        )
+        dup_material = {
+            "id": "dup_mat",
+            "id_numerik": 3,
+            "nama": "Duplikat",
+            "fase_default": "padat",
+            "physics_kind": "static",
+            "kerapatan_kg_m3": 1000,
+            "warna_dasar_srgb": "#112233",
+            "rujukan": "CRC Handbook",
+        }
+        (self.root / "data" / "materials" / "dup_mat.json").write_text(
+            json.dumps(dup_material), encoding="utf-8"
+        )
+        exit_code = validate_all_data(self.root)
+        self.assertEqual(exit_code, 1)
+
 
 if __name__ == "__main__":
     unittest.main()

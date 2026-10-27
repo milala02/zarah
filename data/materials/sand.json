@@ -1,0 +1,14 @@
+{
+  "id": "sand",
+  "id_numerik": 2,
+  "nama": "Pasir",
+  "fase_default": "padat",
+  "physics_kind": "powder",
+  "kerapatan_kg_m3": 1600,
+  "suhu_transisi_c": {},
+  "daya_hantar_panas": null,
+  "kapasitas_panas": null,
+  "mudah_terbakar": false,
+  "warna_dasar_srgb": "#E6C88A",
+  "rujukan": "CRC Handbook of Chemistry and Physics, 97th ed. (2016) — densitas curah pasir kuarsa."
+}

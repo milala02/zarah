@@ -16,6 +16,7 @@ func run() -> Dictionary:
 	_assert_true(is_equal_approx(c0.suhu_c, 20.0), "suhu_c harus 20.0", stats)
 	_assert_true(is_equal_approx(c0.massa_kg, 0.0), "massa_kg harus 0.0", stats)
 	_assert_true(c0.fase == Cell.Fase.PADAT, "fase harus PADAT", stats)
+	_assert_true(c0.last_moved_tick == -1, "last_moved_tick awal harus -1", stats)
 
 	var a1: Cell = Cell.new(1, 5.0, 10.0, Cell.Fase.CAIR)
 	var a2: Cell = Cell.new(1, 5.0, 10.0, Cell.Fase.CAIR)
@@ -35,6 +36,15 @@ func run() -> Dictionary:
 			and not a1.equals(diff_fase)
 		),
 		"equals harus true untuk nilai identik dan false untuk field berbeda",
+		stats
+	)
+
+	var tick_diff: Cell = Cell.new(1, 5.0, 10.0, Cell.Fase.CAIR)
+	tick_diff.last_moved_tick = 42
+	var tick_dup: Cell = tick_diff.duplicate_cell()
+	_assert_true(
+		a1.equals(tick_diff) and tick_dup.last_moved_tick == 42,
+		"equals harus mengabaikan last_moved_tick dan duplicate_cell menyalin last_moved_tick",
 		stats
 	)
 

@@ -12,7 +12,7 @@ func run() -> Dictionary:
 	var stats: Dictionary = {"total": 0, "failed": 0}
 	var defaults: Dictionary = {"suhu_ambient_c": 20.0, "material_udara_id": 0}
 
-	# 1. chunk_at(Vector2i(0,0)) -> semua sel material_id==0, suhu_c==20.0, fase==Cell.Fase.PADAT
+	# 1. chunk_at(Vector2i(0,0)) -> semua sel material_id==0, suhu_c==20.0, fase==Cell.Fase.GAS
 	var w0: World = World.new(42, defaults)
 	var c00: Chunk = w0.chunk_at(Vector2i(0, 0))
 	var all_default: bool = true
@@ -23,7 +23,7 @@ func run() -> Dictionary:
 				cell.material_id != 0
 				or not is_equal_approx(cell.suhu_c, 20.0)
 				or not is_equal_approx(cell.massa_kg, 0.0)
-				or cell.fase != Cell.Fase.PADAT
+				or cell.fase != Cell.Fase.GAS
 			):
 				all_default = false
 				break
@@ -31,7 +31,7 @@ func run() -> Dictionary:
 			break
 	_assert_true(
 		all_default,
-		"chunk_at(0,0) harus berisi sel default (material_id=0, suhu_c=20.0, fase=PADAT)",
+		"chunk_at(0,0) harus berisi sel default (material_id=0, suhu_c=20.0, fase=GAS)",
 		stats
 	)
 

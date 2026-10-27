@@ -22,7 +22,8 @@ func _init(p_seed: int, defaults: Dictionary) -> void:
 func _make_default_cell() -> Cell:
 	var mat_id: int = int(_defaults["material_udara_id"])
 	var suhu: float = float(_defaults["suhu_ambient_c"])
-	return Cell.new(mat_id, suhu, 0.0, Cell.Fase.PADAT)
+	# TODO(T2.2): ganti ke registry.get_fase_default(material_udara_id)
+	return Cell.new(mat_id, suhu, 0.0, Cell.Fase.GAS)
 
 
 func chunk_at(coord: Vector2i) -> Chunk:

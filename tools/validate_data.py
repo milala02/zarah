@@ -84,11 +84,26 @@ def validate_all_data(repo_root: Path) -> int:
         print(mat_err)
         return 1
 
+    seen_id_numerik: dict[int, Path] = {}
     material_files: list[Path] = sorted(materials_dir.glob("*.json"))
     for file_path in material_files:
         rel_path = file_path.relative_to(repo_root)
         if not _validate_file(file_path, rel_path, material_validator):
             failed = True
+            continue
+
+        instance = load_json(file_path)
+        if isinstance(instance, dict) and isinstance(instance.get("id_numerik"), int):
+            id_num: int = instance["id_numerik"]
+            if id_num in seen_id_numerik:
+                prev_path: Path = seen_id_numerik[id_num]
+                print(
+                    f"GAGAL {rel_path}: duplikat id_numerik={id_num} "
+                    f"(sudah dipakai di {prev_path})"
+                )
+                failed = True
+            else:
+                seen_id_numerik[id_num] = rel_path
 
     return 1 if failed else 0
 

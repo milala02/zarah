@@ -1,7 +1,9 @@
 {
   "id": "water",
+  "id_numerik": 3,
   "nama": "Air",
   "fase_default": "cair",
+  "physics_kind": "liquid",
   "kerapatan_kg_m3": {
     "cair": 1000,
     "padat": 917
