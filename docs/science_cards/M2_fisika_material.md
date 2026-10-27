@@ -19,6 +19,20 @@
 - **Satu pergerakan per tick:** Setiap sel penggerak hanya berpindah maksimal 1 langkah per tick.
 - **Dinamika tekanan belum dimodelkan:** Air hanya mengalir ke bawah dan menyebar ke samping, belum menghasilkan tekanan dorong hidrodinamika penuh.
 
+## Performa (M2, jujur)
+
+Benchmark M2 (chunk 64x64 fully-loaded: ~1000 sand/water + ~3000 udara idle, 100 tick): rata-rata 36.1 ms/tick di VPS ARM64.
+
+- Spesifikasi target: < 8 ms/tick (Bagian 6.3).
+- Budget tick 20 Hz: 50 ms/tick.
+- Kesimpulan: memenuhi budget tick tetapi headroom tipis untuk render/input/audio.
+- Benchmark mengukur worst-case; chunk settled (dirty=false) dapat di-skip (perlu diimplementasikan).
+- Optimasi ditunda ke M3 dengan TODO:
+    * Skip chunk non-dirty di World.tick().
+    * Cache density/kind lookup via array (bukan Dictionary).
+    * Active-cell list per chunk (hindari scan 4096 sel/tick).
+    * Skip GAS pass jika chunk semua udara.
+
 ## Parameter dan warna dasar sRGB (di data/)
 - `udara`: `id_numerik = 0`, `fase_default = "gas"`, `kerapatan_kg_m3 = 1.2`, `warna_dasar_srgb = "#C8E6F0"`
 - `stone`: `id_numerik = 1`, `fase_default = "padat"`, `kerapatan_kg_m3 = 2600`, `warna_dasar_srgb = "#8A8A8A"`

@@ -26,7 +26,7 @@ SDK/NDK/templates di runner, ATAU (b) hapus override min_sdk.
 - [x] MaterialRegistry murni tanpa FileAccess untuk sim/.
 - [x] Fisika kanonik deterministik: POWDER (pasir), LIQUID (air), GAS (udara) via multi-pass kind.
 - [x] Snapshot determinisme & order independence chunk terverifikasi.
-- [x] Benchmark 100 tick < 50 ms/tick (< 8 ms target perangkat fisik).
+- [x] Benchmark 100 tick < 50 ms/tick (~36.1 ms/tick dicatat sebagai catatan performa jujur; optimasi ke target < 8 ms ditunda ke M3).
 - [x] Kartu Sains M2 tertulis (`docs/science_cards/M2_fisika_material.md`).
 - [ ] Cross-chunk physics — DITUNDA ke M3.
 - [ ] APK debug & uji perangkat fisik — DITUNDA (mengikuti kebijakan M0/M1).
